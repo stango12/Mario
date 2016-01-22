@@ -3,8 +3,8 @@ package com.stango.mario.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.stango.mario.Mario;
 import com.stango.mario.Platformer;
+import com.stango.mario.entities.Mario;
 
 public class HtmlLauncher extends GwtApplication {
 

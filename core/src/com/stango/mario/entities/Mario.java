@@ -1,4 +1,4 @@
-package com.stango.mario;
+package com.stango.mario.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Mario 
@@ -22,7 +23,7 @@ public class Mario
 	Texture marioLFall;
 	Texture marioRFall;
 	
-	Mario()
+	public Mario()
 	{
 		position = new Vector2(20,20);
 		velocity = new Vector2();
@@ -36,7 +37,7 @@ public class Mario
 		marioRFall = new Texture(Gdx.files.internal("marioRightFalling.png"));
 	}
 	
-	public void update(float delta)
+	public void update(float delta, Array<QBlock> qBlocks)
 	{
 		velocity.y -= 25;
 		position.mulAdd(velocity, delta);
