@@ -13,13 +13,14 @@ public class Mario
 {
 	Vector2 position;
 	Vector2 velocity;
+	Vector2 lastPosition;
 	Facing facing;
 	long jumpStartTime;
 	JumpState jumpState;
 	Texture marioL;
 	Texture marioR;
-	Texture marioLJump;
-	Texture marioRJump;
+	//Texture marioLJump;
+	//Texture marioRJump;
 	Texture marioLFall;
 	Texture marioRFall;
 	
@@ -27,26 +28,49 @@ public class Mario
 	{
 		position = new Vector2(20,20);
 		velocity = new Vector2();
+		lastPosition = new Vector2(position);
 		facing = Facing.RIGHT;
 		jumpState = JumpState.FALLING;
 		marioL = new Texture(Gdx.files.internal("marioLeft.png"));
 		marioR = new Texture(Gdx.files.internal("marioRight.png"));
-		marioLJump = new Texture(Gdx.files.internal("marioLeftJump.png"));
-		marioRJump = new Texture(Gdx.files.internal("marioRightJump.png"));
+		//marioLJump = new Texture(Gdx.files.internal("marioLeftJump.png"));
+		//marioRJump = new Texture(Gdx.files.internal("marioRightJump.png"));
 		marioLFall = new Texture(Gdx.files.internal("marioLeftFalling.png"));
 		marioRFall = new Texture(Gdx.files.internal("marioRightFalling.png"));
 	}
 	
 	public void update(float delta, Array<QBlock> qBlocks)
 	{
+		lastPosition.set(position);
 		velocity.y -= 25;
 		position.mulAdd(velocity, delta);
-		if(position.y < 0)
-		{
-			jumpState = JumpState.GROUNDED;
-			velocity.y = 0;
-			position.y = 0;
-		}
+		
+		//if(jumpState != JumpState.JUMPING)
+		//{
+			//jumpState = JumpState.FALLING;
+			if(position.y < 0)
+			{
+				jumpState = JumpState.GROUNDED;
+				velocity.y = 0;
+				position.y = 0;
+			}
+		
+			for(int i = 0; i < qBlocks.size; i++)
+			{
+				if(landedOnBlock(qBlocks.get(i)))
+				{
+					jumpState = JumpState.GROUNDED;
+					velocity.y = 0;
+					position.y = qBlocks.get(i).y + 16;
+				}
+				
+				if(hitBotSide(qBlocks.get(i)))
+				{
+					jumpState = JumpState.FALLING;
+					velocity.y = 0;
+				}
+			}
+		//}
 		
 		if(Gdx.input.isKeyPressed(Keys.LEFT))
 		{
@@ -104,22 +128,53 @@ public class Mario
 			jumpState = JumpState.FALLING;
 	}
 	
+	boolean landedOnBlock(QBlock qBlock)
+	{
+		boolean leftFoot = false;
+		boolean rightFoot = false;
+		boolean straddle = false;
+		
+		if(lastPosition.y >= qBlock.y + 16 && position.y < qBlock.y + 16)
+		{
+			leftFoot = qBlock.x < position.x && qBlock.x + 16 > position.x;
+			rightFoot = qBlock.x < position.x + 14 && qBlock.x + 16 > position.x + 14;
+			straddle = qBlock.x > position.x && qBlock.x + 16 < position.x + 14;
+		}
+		
+		return leftFoot || rightFoot || straddle;
+	}
+	
+	boolean hitBotSide(QBlock qBlock)
+	{
+		boolean leftFoot = false;
+		boolean rightFoot = false;
+		boolean straddle = false;
+		
+		if(lastPosition.y + 20 < qBlock.y && position.y + 20 > qBlock.y)
+		{
+			leftFoot = qBlock.x < position.x && qBlock.x + 16 > position.x;
+			rightFoot = qBlock.x < position.x + 14 && qBlock.x + 16 > position.x + 14;
+			straddle = qBlock.x > position.x && qBlock.x + 16 < position.x + 14;
+		}
+		return leftFoot || rightFoot || straddle;
+	}
+	
 	public void render(SpriteBatch batch)
 	{
 		if(facing == Facing.LEFT)
 		{
-			if(jumpState == JumpState.JUMPING)
-				batch.draw(marioLJump, position.x, position.y);
-			else if(jumpState == JumpState.FALLING)
+			if(jumpState == JumpState.JUMPING || jumpState == JumpState.FALLING)
+				//batch.draw(marioLJump, position.x, position.y);
+			//else if(jumpState == JumpState.FALLING)
 				batch.draw(marioLFall, position.x, position.y);
 			else
 				batch.draw(marioL, position.x, position.y);
 		}
 		else
 		{
-			if(jumpState == JumpState.JUMPING)
-				batch.draw(marioRJump, position.x, position.y);
-			else if(jumpState == JumpState.FALLING)
+			if(jumpState == JumpState.JUMPING ||jumpState == JumpState.FALLING)
+				//batch.draw(marioRJump, position.x, position.y);
+			//else if(jumpState == JumpState.FALLING)
 				batch.draw(marioRFall, position.x, position.y);
 			else
 				batch.draw(marioR, position.x, position.y);
@@ -130,8 +185,8 @@ public class Mario
 	{
 		marioL.dispose();
 		marioR.dispose();
-		marioLJump.dispose();
-		marioRJump.dispose();
+		//marioLJump.dispose();
+		//marioRJump.dispose();
 		marioLFall.dispose();
 		marioRFall.dispose();
 	}
