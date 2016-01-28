@@ -15,7 +15,8 @@ public class Level
 		mario = new Mario();
 		qBlocks = new Array<QBlock>();
 		qBlocks.add(new QBlock(128, 70, QBlock.PowerUp.COIN));
-		//qBlocks.add(new QBlock(144, 70, QBlock.PowerUp.COIN));
+		qBlocks.add(new QBlock(112, 54, QBlock.PowerUp.COIN));
+		qBlocks.add(new QBlock(144, 54, QBlock.PowerUp.COIN));
 	}
 	
 	public void update(float delta)

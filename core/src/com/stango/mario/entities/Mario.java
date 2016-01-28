@@ -45,16 +45,16 @@ public class Mario
 		velocity.y -= 25;
 		position.mulAdd(velocity, delta);
 		
-		//if(jumpState != JumpState.JUMPING)
-		//{
-			//jumpState = JumpState.FALLING;
+		if(jumpState != JumpState.JUMPING)
+		{
+			jumpState = JumpState.FALLING;
 			if(position.y < 0)
 			{
 				jumpState = JumpState.GROUNDED;
 				velocity.y = 0;
 				position.y = 0;
 			}
-		
+		}
 			for(int i = 0; i < qBlocks.size; i++)
 			{
 				if(landedOnBlock(qBlocks.get(i)))
@@ -64,10 +64,20 @@ public class Mario
 					position.y = qBlocks.get(i).y + 16;
 				}
 				
-				if(hitBotSide(qBlocks.get(i)))
+				else if(hitBotSide(qBlocks.get(i)))
 				{
 					jumpState = JumpState.FALLING;
 					velocity.y = 0;
+				}
+				
+				else if(hitLeftSide(qBlocks.get(i)))
+				{
+					position.x = qBlocks.get(i).x - 16;
+				}
+				
+				else if(hitRightSide(qBlocks.get(i)))
+				{
+					position.x = qBlocks.get(i).x + 16;
 				}
 			}
 		//}
@@ -101,6 +111,7 @@ public class Mario
 		else
 			endJump();
 	}
+		
 	
 	private void startJump()
 	{
@@ -157,6 +168,36 @@ public class Mario
 			straddle = qBlock.x > position.x && qBlock.x + 16 < position.x + 14;
 		}
 		return leftFoot || rightFoot || straddle;
+	}
+	
+	boolean hitLeftSide(QBlock qBlock)
+	{
+		boolean head = false;
+		boolean foot = false;
+		boolean straddle = false;
+		
+		if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+		{
+			head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
+			foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+			straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+		}
+		return head || foot || straddle;
+	}
+	
+	boolean hitRightSide(QBlock qBlock)
+	{
+		boolean head = false;
+		boolean foot = false;
+		boolean straddle = false;
+		
+		if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+		{
+			head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
+			foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+			straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+		}
+		return head || foot || straddle;
 	}
 	
 	public void render(SpriteBatch batch)
