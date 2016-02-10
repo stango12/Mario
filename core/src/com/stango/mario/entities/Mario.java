@@ -177,6 +177,7 @@ public class Mario
 		boolean foot = false;
 		boolean straddle = false;
 		
+		if(position.y >= qBlock.y)
 		if(position.x < qBlock.x && position.x + 16 > qBlock.x)
 		{
 			head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
@@ -192,6 +193,7 @@ public class Mario
 		boolean foot = false;
 		boolean straddle = false;
 		
+		if(position.y >= qBlock.y)
 		if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
 		{
 			head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
