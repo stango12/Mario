@@ -68,6 +68,7 @@ public class Mario
 				{
 					jumpState = JumpState.FALLING;
 					velocity.y = 0;
+					qBlocks.get(i).setHit(true);
 				}
 				
 				else if(hitLeftSide(qBlocks.get(i)))

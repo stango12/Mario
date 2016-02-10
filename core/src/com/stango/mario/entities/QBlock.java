@@ -10,6 +10,7 @@ public class QBlock
 	PowerUp powerUp;
 	boolean hit;
 	Texture block;
+	Texture hitBlock;
 	
 	public QBlock(int x, int y, PowerUp p)
 	{
@@ -18,11 +19,20 @@ public class QBlock
 		powerUp = p;
 		hit = false;
 		block = new Texture(Gdx.files.internal("QBlock.png"));
+		hitBlock = new Texture(Gdx.files.internal("hitBlock.png"));
+	}
+	
+	public void setHit(boolean h)
+	{
+		hit = h;
 	}
 	
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(block, x, y);
+		if(hit)
+			batch.draw(hitBlock, x, y);
+		else
+			batch.draw(block, x, y);
 	}
 	
 	public void dispose()
