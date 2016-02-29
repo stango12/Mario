@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Mario 
 {
-	Vector2 position;
+	public Vector2 position;
 	Vector2 velocity;
 	Vector2 lastPosition;
 	Facing facing;

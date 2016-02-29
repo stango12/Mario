@@ -13,11 +13,15 @@ public class GameplayScreen extends ScreenAdapter
 	SpriteBatch batch;
 	ExtendViewport viewport;
 	
+	private ChaseCam chaseCam;
+	
 	public void show()
 	{
 		batch = new SpriteBatch();
 		viewport = new ExtendViewport(256, 256);
 		level = new Level();
+		
+		chaseCam = new ChaseCam(viewport.getCamera(), level.mario);
 	}
 	
 	public void resize(int width, int height)
@@ -33,6 +37,7 @@ public class GameplayScreen extends ScreenAdapter
 	
 	public void render(float delta)
 	{
+		chaseCam.update();
 		level.update(delta);
 		viewport.apply();
 		Gdx.gl.glClearColor(Color.SKY.r, Color.SKY.g, Color.SKY.b, Color.SKY.a);
