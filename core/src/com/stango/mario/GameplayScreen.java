@@ -20,6 +20,7 @@ public class GameplayScreen extends ScreenAdapter
 		batch = new SpriteBatch();
 		viewport = new ExtendViewport(256, 256);
 		level = new Level();
+		level.init();
 		
 		chaseCam = new ChaseCam(viewport.getCamera(), level.mario);
 	}

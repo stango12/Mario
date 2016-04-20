@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.stango.mario.entities.Mario.JumpState;
 
 public class Goomba 
 {
-	public Vector2 position;
+	public Vector2 position, velocity;
 	private Direction direction;
 	private final float WALKING_SPEED = 15;
 	private Texture goombaLeft, goombaRight;
@@ -18,6 +19,7 @@ public class Goomba
 	public Goomba(Vector2 pos)
 	{
 		position = pos;
+		velocity = new Vector2();
 		direction = Direction.RIGHT;
 		goombaLeft = new Texture(Gdx.files.internal("goombaLeft.png"));
 		goombaRight = new Texture(Gdx.files.internal("goombaRight.png"));
@@ -26,6 +28,14 @@ public class Goomba
 	
 	public void update(float delta)
 	{
+		velocity.y -= 25;
+		position.mulAdd(velocity, delta);
+		if(position.y < 0)
+		{
+			velocity.y = 0;
+			position.y = 0;
+		}
+		
 		switch (direction)
 		{
 			case LEFT:
