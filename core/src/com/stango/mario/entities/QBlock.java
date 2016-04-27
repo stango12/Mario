@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.stango.mario.entities.Mario.Size;
 
@@ -66,6 +67,11 @@ public class QBlock
 	public void render(SpriteBatch batch)
 	{
 		//checks if the block was hit from the bottom
+		if(powerUp == PowerUp.NONE)
+		{
+			hit = true;
+		}
+		
 		if(hit)
 		{
 			batch.draw(hitBlock, x, y);
@@ -103,7 +109,7 @@ public class QBlock
 		}
 	}
 	
-	public void update(float delta)
+	public void update(float delta, Array<QBlock> qBlocks)
 	{
 		//moving the mushroom and making it stay for 5 seconds/if mario gets it
 		if(!mushroomGot)
@@ -113,10 +119,10 @@ public class QBlock
 				mushroomGot = true;
 			}
 			
-			mushroomPos.x += 20 * delta;
+			mushroomPos.x += 40 * delta;
 			velocity.y -= 15;
 			mushroomPos.mulAdd(velocity, delta);
-			if(onBlock())
+			if(onBlock(qBlocks))
 			{
 				velocity.y = 0;
 				mushroomPos.y = y + 16;
@@ -133,18 +139,26 @@ public class QBlock
 	 * On block logic
 	 * @return if mushroom is on block
 	 */
-	boolean onBlock()
+	boolean onBlock(Array<QBlock> qBlocks)
 	{
 		boolean leftFoot = false;
 		boolean rightFoot = false;
 		boolean straddle = false;
 		
-		leftFoot = x < mushroomPos.x && x + 16 > mushroomPos.x;
-		rightFoot = x < mushroomPos.x + 14 && x + 16 > mushroomPos.x + 14;
-		straddle = x > mushroomPos.x && x + 16 < mushroomPos.x + 14;
-
+		for(int i = 0; i < qBlocks.size; i++)
+		{
+			QBlock q = qBlocks.get(i);
+			int xBlock = q.getX();
+			
+			leftFoot = xBlock < mushroomPos.x && xBlock + 16 > mushroomPos.x;
+			rightFoot = xBlock < mushroomPos.x + 14 && xBlock + 16 > mushroomPos.x + 14;
+			straddle = xBlock > mushroomPos.x && xBlock + 16 < mushroomPos.x + 14;
+			
+			if(leftFoot || rightFoot || straddle)
+				return true;
+		}
 		
-		return leftFoot || rightFoot || straddle;
+		return false;
 	}
 	
 	/**
@@ -154,6 +168,24 @@ public class QBlock
 	public Vector2 getMushroomPos()
 	{
 		return mushroomPos;
+	}
+	
+	/**
+	 * Return x position
+	 * @return
+	 */
+	public int getX()
+	{
+		return x;
+	}
+	
+	/**
+	 * Return y position
+	 * @return
+	 */
+	public int getY()
+	{
+		return y;
 	}
 	
 	/**
@@ -189,6 +221,7 @@ public class QBlock
 	
 	public enum PowerUp
 	{
+		NONE,
 		COIN,
 		MUSHROOM
 	}

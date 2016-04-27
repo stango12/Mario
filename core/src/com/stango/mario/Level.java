@@ -22,13 +22,18 @@ public class Level
 	{
 
 		qBlocks = new Array<QBlock>();
-		qBlocks.add(new QBlock(128, 70, QBlock.PowerUp.COIN));
-		qBlocks.add(new QBlock(112, 55, QBlock.PowerUp.COIN));
-		qBlocks.add(new QBlock(144, 55, QBlock.PowerUp.COIN));
-		qBlocks.add(new QBlock(200, 55, QBlock.PowerUp.MUSHROOM));
-		g = new Goomba(new Vector2(100, 0));
 		goombas = new Array<Goomba>();
-		goombas.add(g);
+		
+		//adding first part before pipes
+		qBlocks.add(new QBlock(100, 50, QBlock.PowerUp.COIN));
+		qBlocks.add(new QBlock(164, 50, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(180, 50, QBlock.PowerUp.MUSHROOM));
+		qBlocks.add(new QBlock(196, 50, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(212, 50, QBlock.PowerUp.COIN));
+		qBlocks.add(new QBlock(228, 50, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(196, 114, QBlock.PowerUp.COIN));
+		
+		goombas.add(new Goomba(new Vector2(164, 0)));
 	}
 	public void update(float delta)
 	{
@@ -36,7 +41,7 @@ public class Level
 		for(Goomba g : goombas)
 			g.update(delta);
 		for(QBlock q : qBlocks)
-			q.update(delta);
+			q.update(delta, qBlocks);
 	}
 	
 	public void render(SpriteBatch batch)
