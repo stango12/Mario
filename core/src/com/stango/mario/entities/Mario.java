@@ -11,8 +11,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.stango.mario.Level;
 
+//TODO: fix block logic for big mario. can go under one block high spaces.
+
 public class Mario 
 {
+	//small mario is 14x20, falling 16x20
+	//big mario is 15x28, falling 16x29
 	public Vector2 position;
 	Vector2 velocity;
 	Vector2 lastPosition;
@@ -59,6 +63,9 @@ public class Mario
 		size = Size.SMALL;
 	}
 	
+	/**
+	 * Initialize everything, can be used to reset the level
+	 */
 	public void init()
 	{
 		position = new Vector2(20,20);
@@ -70,7 +77,14 @@ public class Mario
 		size = Size.SMALL;
 		level.init();
 	}
-	public void update(float delta, Array<QBlock> qBlocks)
+	
+	/**
+	 * All the logic for mario
+	 * @param delta
+	 * @param qBlocks array of qblocks in the level
+	 * @param pipes array of pipes in the level
+	 */
+	public void update(float delta, Array<QBlock> qBlocks, Array<Pipe> pipes)
 	{
 		lastPosition.set(position);
 		
@@ -121,6 +135,24 @@ public class Mario
 				size = Size.BIG;
 		}
 		
+		//pipe logic
+		for(int i = 0; i < pipes.size; i++)
+		{
+			if(landedOnPipe(pipes.get(i)))
+			{
+				jumpState = JumpState.GROUNDED;
+				velocity.y = 0;
+				position.y = pipes.get(i).y + pipes.get(i).height;
+			}
+			else if(hitLeftSide(pipes.get(i)))
+			{
+				position.x = pipes.get(i).x - 16;
+			}
+			else if(hitRightSide(pipes.get(i)))
+			{
+				position.x = pipes.get(i).x + 32;
+			}
+		}
 		
 		//movement
 		if(Gdx.input.isKeyPressed(Keys.LEFT))
@@ -177,6 +209,12 @@ public class Mario
 					hitEnemy();
 				else
 					continueInvulnerability();
+				g.changeDirection();
+			}
+			for(Pipe p : pipes)
+			{
+				if(p.getCollidingRectangle().overlaps(enemyCollision))
+					g.changeDirection();
 			}
 		}
 	}
@@ -227,6 +265,7 @@ public class Mario
 		boolean rightFoot = false;
 		boolean straddle = false;
 		
+		//16 = block width, 14 = mario width, 16 = block height
 		if(lastPosition.y >= qBlock.y + 16 && position.y < qBlock.y + 16)
 		{
 			leftFoot = qBlock.x < position.x && qBlock.x + 16 > position.x;
@@ -250,6 +289,7 @@ public class Mario
 		
 		if(size == Size.SMALL)
 		{
+			//20 = small  mario height
 			if(lastPosition.y + 20 < qBlock.y && position.y + 20 > qBlock.y)
 			{
 				leftFoot = qBlock.x < position.x && qBlock.x + 16 > position.x;
@@ -259,8 +299,10 @@ public class Mario
 		}
 		else
 		{
+			//28 = big mario height
 			if(lastPosition.y + 28 < qBlock.y && position.y + 28 > qBlock.y)
 			{
+				//System.out.println("Flag");
 				leftFoot = qBlock.x < position.x && qBlock.x + 16 > position.x;
 				rightFoot = qBlock.x < position.x + 15 && qBlock.x + 16 > position.x + 15;
 				straddle = qBlock.x > position.x && qBlock.x + 16 < position.x + 15;
@@ -280,13 +322,28 @@ public class Mario
 		boolean foot = false;
 		boolean straddle = false;
 		
-		if(position.y >= qBlock.y) //added if statement that fixed random clipping
+		if(size == Size.SMALL)
 		{
-			if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+			if(position.y >= qBlock.y) //added if statement that fixed random clipping
 			{
-				head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
-				foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
-				straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+				{
+					head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
+					foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+				}
+			}
+		}
+		else
+		{
+			if(position.y >= qBlock.y) //added if statement that fixed random clipping
+			{
+				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+				{
+					head = qBlock.y < position.y + 28 && qBlock.y + 16 > position.y + 28;
+					foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 28;
+				}
 			}
 		}
 		return head || foot || straddle;
@@ -303,13 +360,96 @@ public class Mario
 		boolean foot = false;
 		boolean straddle = false;
 		
-		if(position.y >= qBlock.y) //added if statement that fixed random clipping
+		if(size == Size.SMALL)
 		{
-			if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+			if(position.y >= qBlock.y) //added if statement that fixed random clipping
 			{
-				head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
-				foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
-				straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+				if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+				{
+					head = qBlock.y < position.y + 20 && qBlock.y + 16 > position.y + 20;
+					foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
+				}
+			}
+		}
+		else
+		{
+			if(position.y >= qBlock.y) //added if statement that fixed random clipping
+			{
+				if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+				{
+					head = qBlock.y < position.y + 28 && qBlock.y + 16 > position.y + 28;
+					foot = qBlock.y < position.y && qBlock.y + 16 > position.y;
+					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 28;
+				}
+			}
+		}
+		
+		return head || foot || straddle;
+	}
+	
+	/**
+	 * Checks if mario is on top of a pipe
+	 * @param pipe Pipe
+	 * @return True or false
+	 */
+	boolean landedOnPipe(Pipe pipe)
+	{
+		boolean leftFoot = false;
+		boolean rightFoot = false;
+		boolean straddle = false;
+		
+		if(lastPosition.y >= pipe.y + pipe.height && position.y < pipe.y + pipe.height)
+		{
+			leftFoot = pipe.x < position.x && pipe.x + 32 > position.x;
+			rightFoot = pipe.x < position.x + 14 && pipe.x + 32 > position.x + 14;
+			straddle = pipe.x > position.x && pipe.x + 32 < position.x + 14;
+		}
+		
+		return leftFoot || rightFoot || straddle;
+	}
+	
+	/**
+	 * Checks if mario is hitting the pipe from the left
+	 * @param pipe pipe
+	 * @return True or false
+	 */
+	boolean hitLeftSide(Pipe pipe)
+	{
+		boolean head = false;
+		boolean foot = false;
+		boolean straddle = false;
+		
+		if(position.y >= pipe.y) //added if statement that fixed random clipping
+		{
+			if(position.x < pipe.x && position.x + 16 > pipe.x)
+			{
+				head = pipe.y < position.y + 20 && pipe.y + pipe.height > position.y + 20;
+				foot = pipe.y < position.y && pipe.y + pipe.height > position.y;
+				straddle = pipe.y > position.y && pipe.y + pipe.height < position.y + 20;
+			}
+		}
+		return head || foot || straddle;
+	}
+	
+	/**
+	 * Checks if mario is hitting pipe from the right
+	 * @param pipe pipe
+	 * @return True or false
+	 */
+	boolean hitRightSide(Pipe pipe)
+	{
+		boolean head = false;
+		boolean foot = false;
+		boolean straddle = false;
+		
+		if(position.y >= pipe.y) //added if statement that fixed random clipping
+		{
+			if(position.x < pipe.x + 32 && position.x + 16 > pipe.x + 32)
+			{
+				head = pipe.y < position.y + pipe.height && pipe.y + pipe.height > position.y + 20;
+				foot = pipe.y < position.y && pipe.y + pipe.height > position.y;
+				straddle = pipe.y > position.y && pipe.y + pipe.height < position.y + 20;
 			}
 		}
 		return head || foot || straddle;

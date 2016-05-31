@@ -11,6 +11,7 @@ public class Level
 	Mario mario;
 	Array<QBlock> qBlocks;
 	Array<Goomba> goombas;
+	Array<Pipe> pipes;
 	Goomba g;
 	
 	public Level()
@@ -23,6 +24,7 @@ public class Level
 
 		qBlocks = new Array<QBlock>();
 		goombas = new Array<Goomba>();
+		pipes = new Array<Pipe>();
 		
 		//adding first part before pipes
 		qBlocks.add(new QBlock(100, 50, QBlock.PowerUp.COIN));
@@ -33,11 +35,21 @@ public class Level
 		qBlocks.add(new QBlock(228, 50, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(196, 114, QBlock.PowerUp.COIN));
 		
+		//blocks one block between two things as big mario logic isn't working completely
+//		qBlocks.add(new QBlock(196, 18, QBlock.PowerUp.NONE));
+//		qBlocks.add(new QBlock(212, 18, QBlock.PowerUp.COIN));
+//		qBlocks.add(new QBlock(228, 18, QBlock.PowerUp.NONE));
+		
 		goombas.add(new Goomba(new Vector2(164, 0)));
+		
+		pipes.add(new Pipe(292, 0, 50));
+		pipes.add(new Pipe(452, 0, 67));
+		goombas.add(new Goomba(new Vector2(550, 0)));
+		pipes.add(new Pipe(580, 0, 84));
 	}
 	public void update(float delta)
 	{
-		mario.update(delta, qBlocks);
+		mario.update(delta, qBlocks, pipes);
 		for(Goomba g : goombas)
 			g.update(delta);
 		for(QBlock q : qBlocks)
@@ -47,10 +59,12 @@ public class Level
 	public void render(SpriteBatch batch)
 	{
 		batch.begin();
-		for(int i = 0; i < qBlocks.size; i++)
-			qBlocks.get(i).render(batch);	
+		for(QBlock q : qBlocks)
+			q.render(batch);	
 		for(Goomba g : goombas)
 			g.render(batch);
+		for(Pipe p : pipes)
+			p.render(batch);
 		mario.render(batch);
 		batch.end();
 	}
@@ -63,7 +77,11 @@ public class Level
 	public void dispose()
 	{
 		mario.dispose();
-		for(int i = 0; i < qBlocks.size; i++)
-			qBlocks.get(i).dispose();
+		for(QBlock q : qBlocks)
+			q.dispose();	
+		for(Goomba g : goombas)
+			g.dispose();
+		for(Pipe p : pipes)
+			p.dispose();
 	}
 }

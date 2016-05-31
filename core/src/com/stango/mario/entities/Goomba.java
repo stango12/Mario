@@ -10,6 +10,7 @@ import com.stango.mario.entities.Mario.JumpState;
 
 public class Goomba 
 {
+	//goombas are 16x15
 	public Vector2 position, velocity;
 	private Direction direction;
 	private final float WALKING_SPEED = 15;
@@ -28,8 +29,11 @@ public class Goomba
 	
 	public void update(float delta)
 	{
+		//gravity logic
 		velocity.y -= 25;
 		position.mulAdd(velocity, delta);
+		
+		//make sure goomba doesnt fall through the ground
 		if(position.y < 0)
 		{
 			velocity.y = 0;
@@ -46,15 +50,16 @@ public class Goomba
 				break;				
 		}
 		
-		float secondsElapsed = (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
-		if(secondsElapsed % 6 > 5)
-		{
-			startTime = TimeUtils.nanoTime();
-			if(direction == Direction.LEFT)
-				direction = Direction.RIGHT;
-			else
-				direction = Direction.LEFT;
-		}
+		//goomba moves in one direction for 5 seconds
+//		float secondsElapsed = (TimeUtils.nanoTime() - startTime) * MathUtils.nanoToSec;
+//		if(secondsElapsed % 6 > 5)
+//		{
+//			startTime = TimeUtils.nanoTime();
+//			if(direction == Direction.LEFT)
+//				direction = Direction.RIGHT;
+//			else
+//				direction = Direction.LEFT;
+//		}
 	}
 	
 	public void render(SpriteBatch batch)
@@ -68,6 +73,20 @@ public class Goomba
 				batch.draw(goombaRight, position.x, position.y);
 				break;
 		}	
+	}
+	
+	public void dispose()
+	{
+		goombaLeft.dispose();
+		goombaRight.dispose();
+	}
+	
+	public void changeDirection()
+	{
+		if(direction == Direction.LEFT)
+			direction = Direction.RIGHT;
+		else
+			direction = Direction.LEFT;
 	}
 	
 	enum Direction

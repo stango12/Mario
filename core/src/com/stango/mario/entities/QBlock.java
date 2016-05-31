@@ -13,6 +13,9 @@ import com.stango.mario.entities.Mario.Size;
 
 public class QBlock 
 {
+	//blocks are 16x16
+	//mushrooms are 16x16
+	//coins are 12x16
 	int x, y;
 	PowerUp powerUp;
 	boolean hit;
