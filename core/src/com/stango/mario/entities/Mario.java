@@ -42,11 +42,6 @@ public class Mario
 	
 	public Mario(Level l)
 	{
-		position = new Vector2(20,20);
-		velocity = new Vector2();
-		lastPosition = new Vector2(position);
-		facing = Facing.RIGHT;
-		jumpState = JumpState.FALLING;
 		marioL = new Texture(Gdx.files.internal("marioLeft.png"));
 		marioR = new Texture(Gdx.files.internal("marioRight.png"));
 		//marioLJump = new Texture(Gdx.files.internal("marioLeftJump.png"));
@@ -59,8 +54,7 @@ public class Mario
 		marioLFallBig = new Texture(Gdx.files.internal("marioLeftFallingBig.png"));
 		marioRFallBig = new Texture(Gdx.files.internal("marioRightFallingBig.png"));
 		level = l;
-		hitFlag = true;
-		size = Size.SMALL;
+		init();
 	}
 	
 	/**
@@ -68,11 +62,11 @@ public class Mario
 	 */
 	public void init()
 	{
-		position = new Vector2(20,20);
+		position = new Vector2(20,32);
 		velocity = new Vector2();
 		lastPosition = new Vector2(position);
 		facing = Facing.RIGHT;
-		jumpState = JumpState.FALLING;
+		jumpState = JumpState.GROUNDED;
 		hitFlag = true;
 		size = Size.SMALL;
 		level.init();
@@ -84,7 +78,7 @@ public class Mario
 	 * @param qBlocks array of qblocks in the level
 	 * @param pipes array of pipes in the level
 	 */
-	public void update(float delta, Array<QBlock> qBlocks, Array<Pipe> pipes)
+	public void update(float delta, Array<QBlock> qBlocks, Array<Pipe> pipes, Array<Platform> platforms)
 	{
 		lastPosition.set(position);
 		
@@ -92,21 +86,37 @@ public class Mario
 		velocity.y -= 25;
 		position.mulAdd(velocity, delta);
 		
+		//mario collision detection
+		Rectangle marioCollision;
+		if(size == Size.SMALL)
+			marioCollision = new Rectangle(position.x, position.y, 14, 20);
+		else
+			marioCollision = new Rectangle(position.x, position.y, 14, 28);
+		
 		//jump logic
 		if(jumpState != JumpState.JUMPING)
 		{
 			jumpState = JumpState.FALLING;
+			//ground logic
+			for(int i = 0; i < platforms.size; i++)
+			{
+				if(marioCollision.overlaps(platforms.get(i).getCollidingRectangle()) && lastPosition.y >= platforms.get(i).y + 32)
+				{
+					jumpState = JumpState.GROUNDED;
+					velocity.y = 0;
+					position.y = platforms.get(i).y + 32;
+				}
+			}
 			if(position.y < 0)
 			{
-				jumpState = JumpState.GROUNDED;
-				velocity.y = 0;
-				position.y = 0;
+				init();
 			}
 		}
 		
 		//block logic
 		for(int i = 0; i < qBlocks.size; i++)
 		{
+			//block size is 16x16
 			if(landedOnBlock(qBlocks.get(i)))
 			{
 				jumpState = JumpState.GROUNDED;
@@ -191,15 +201,20 @@ public class Mario
 			init();
 		}
 		
-		//enemy collision detection
-		Rectangle marioCollision;
-		if(size == Size.SMALL)
-			marioCollision = new Rectangle(position.x, position.y, 14, 20);
-		else
-			marioCollision = new Rectangle(position.x, position.y, 14, 28);
+		//debug stuff
+		if(Gdx.input.isKeyPressed(Keys.NUM_1))
+		{
+			init();
+			position = new Vector2(1162, 32);
+		}
 		
 		for(Goomba g : level.getEnemies())
 		{
+			if(Math.abs(position.x - g.position.x) <= 200) //checking if goombas are close enough to be updated
+				g.active(true);
+			else
+				g.active(false);
+			
 			Rectangle enemyCollision = new Rectangle(g.position.x, g.position.y, 16, 15);
 			if(marioCollision.overlaps(enemyCollision))
 			{
@@ -460,7 +475,6 @@ public class Mario
 	 */
 	public void hitEnemy()
 	{
-		System.out.println("Ouch!");
 		if(size == Size.BIG)
 		{
 			size = size.SMALL;
@@ -487,9 +501,8 @@ public class Mario
 	public void killEnemy(Goomba g)
 	{
 		level.getEnemies().removeValue(g, true);
+		g.dispose();
 		velocity.y = 256;
-		System.out.println("RIP");
-		//To Do: make mario jump a bit when he steps on a goomba
 	}
 	
 	public void render(SpriteBatch batch)
