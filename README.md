@@ -5,6 +5,7 @@ A Mario Clone
 - Get rid of all magic numbers
 - Implement Koopas
 - Implement Star powerup
+- Implement Flag
 
 ## Maybe:
 - Goombas collide with each other
@@ -12,5 +13,4 @@ A Mario Clone
 - Holding x makes Mario run
 
 ## Bugs:
-- Big Mario can walk through one block high spaces 
-- Block logic doesn't work when either small or big Mario jump under one block high blocks
+- 

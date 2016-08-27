@@ -107,7 +107,7 @@ public class Mario
 					position.y = platforms.get(i).y + 32;
 				}
 			}
-			if(position.y < 0)
+			if(position.y < -25)
 			{
 				init();
 			}
@@ -336,10 +336,13 @@ public class Mario
 		boolean head = false;
 		boolean foot = false;
 		boolean straddle = false;
+		boolean groundHead = false;
+		boolean groundFoot = false;
+		boolean groundStraddle = false;
 		
 		if(size == Size.SMALL)
 		{
-			if(position.y >= qBlock.y) //added if statement that fixed random clipping
+			if(position.y > qBlock.y) //added if statement that fixed random clipping
 			{
 				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
 				{
@@ -348,10 +351,19 @@ public class Mario
 					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
 				}
 			}
+			if(position.y == qBlock.y) //this is if mario and the block are on the same height
+			{
+				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+				{
+					groundHead = qBlock.y <= position.y + 20 && qBlock.y + 16 >= position.y + 20;
+					groundFoot = qBlock.y <= position.y && qBlock.y + 16 >= position.y;
+					groundStraddle = qBlock.y >= position.y && qBlock.y + 16 <= position.y + 20;
+				}
+			}
 		}
 		else
 		{
-			if(position.y >= qBlock.y) //added if statement that fixed random clipping
+			if(position.y + 28 > qBlock.y) //added if statement that fixed random clipping
 			{
 				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
 				{
@@ -360,8 +372,18 @@ public class Mario
 					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 28;
 				}
 			}
+			
+			if(position.y == qBlock.y) //this is if mario and the block are on the same height
+			{
+				if(position.x < qBlock.x && position.x + 16 > qBlock.x)
+				{
+					groundHead = qBlock.y <= position.y + 28 && qBlock.y + 16 >= position.y + 28;
+					groundFoot = qBlock.y <= position.y && qBlock.y + 16 >= position.y;
+					groundStraddle = qBlock.y >= position.y && qBlock.y + 16 <= position.y + 28;
+				}
+			}
 		}
-		return head || foot || straddle;
+		return head || foot || straddle || groundHead || groundFoot || groundStraddle;
 	}
 	
 	/**
@@ -374,6 +396,9 @@ public class Mario
 		boolean head = false;
 		boolean foot = false;
 		boolean straddle = false;
+		boolean groundHead = false;
+		boolean groundFoot = false;
+		boolean groundStraddle = false;
 		
 		if(size == Size.SMALL)
 		{
@@ -386,10 +411,19 @@ public class Mario
 					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 20;
 				}
 			}
+			if(position.y == qBlock.y)//this is if mario and the block are on the same height
+			{
+				if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+				{
+					groundHead = qBlock.y <= position.y + 20 && qBlock.y + 16 >= position.y + 20;
+					groundFoot = qBlock.y <= position.y && qBlock.y + 16 >= position.y;
+					groundStraddle = qBlock.y >= position.y && qBlock.y + 16 <= position.y + 20;
+				}
+			}
 		}
 		else
 		{
-			if(position.y >= qBlock.y) //added if statement that fixed random clipping
+			if(position.y + 28 > qBlock.y) //added if statement that fixed random clipping
 			{
 				if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
 				{
@@ -398,9 +432,19 @@ public class Mario
 					straddle = qBlock.y > position.y && qBlock.y + 16 < position.y + 28;
 				}
 			}
+			
+			if(position.y == qBlock.y) //this is if mario and the block are on the same height
+			{
+				if(position.x < qBlock.x + 16 && position.x + 16 > qBlock.x + 16)
+				{
+					groundHead = qBlock.y <= position.y + 28 && qBlock.y + 16 >= position.y + 28;
+					groundFoot = qBlock.y <= position.y && qBlock.y + 16 >= position.y;
+					groundStraddle = qBlock.y >= position.y && qBlock.y + 16 <= position.y + 28;
+				}
+			}
 		}
 		
-		return head || foot || straddle;
+		return head || foot || straddle || groundHead || groundFoot || groundStraddle;
 	}
 	
 	/**

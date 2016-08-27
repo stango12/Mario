@@ -59,7 +59,7 @@ public class Level
 		qBlocks.add(new QBlock(1146, 82, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1162, 82, QBlock.PowerUp.MUSHROOM));
 		qBlocks.add(new QBlock(1178, 82, QBlock.PowerUp.NONE));
-		goombas.add(new Goomba(new Vector2(1175, 100)));
+		goombas.add(new Goomba(new Vector2(1175, 110)));
 		
 		qBlocks.add(new QBlock(1194, 160, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1210, 160, QBlock.PowerUp.NONE));
@@ -69,9 +69,9 @@ public class Level
 		qBlocks.add(new QBlock(1274, 160, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1290, 160, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1306, 160, QBlock.PowerUp.NONE));
-		goombas.add(new Goomba(new Vector2(1226, 176)));
+		goombas.add(new Goomba(new Vector2(1228, 176)));
 		
-		platforms.add(new Platform(1338, 0, 2000));
+		platforms.add(new Platform(1338, 0, 1032));
 		qBlocks.add(new QBlock(1370, 160, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1386, 160, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1402, 160, QBlock.PowerUp.NONE));
@@ -104,6 +104,80 @@ public class Level
 		qBlocks.add(new QBlock(1978, 82, QBlock.PowerUp.NONE));
 		qBlocks.add(new QBlock(1994, 82, QBlock.PowerUp.NONE));
 		
+		qBlocks.add(new QBlock(2058, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2074, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2074, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106, 80, QBlock.PowerUp.NONE));
+
+		qBlocks.add(new QBlock(2202, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2186, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2186, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154, 80, QBlock.PowerUp.NONE));
+		
+		qBlocks.add(new QBlock(2058 + 14 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2074 + 14 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2074 + 14 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090 + 14 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090 + 14 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2090 + 14 * 16, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 14 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 14 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 14 * 16, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 14 * 16, 80, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 15 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 15 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 15 * 16, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2106 + 15 * 16, 80, QBlock.PowerUp.NONE));
+		
+		qBlocks.add(new QBlock(2202 + 15 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2186 + 15 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2186 + 15 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170 + 15 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170 + 15 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2170 + 15 * 16, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154 + 15 * 16, 32, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154 + 15 * 16, 48, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154 + 15 * 16, 64, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2154 + 15 * 16, 80, QBlock.PowerUp.NONE));
+		
+		platforms.add(new Platform(2395, 0, 1000));
+		pipes.add(new Pipe(2522, 32, 32));
+		
+		qBlocks.add(new QBlock(2602, 80, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2618, 80, QBlock.PowerUp.NONE));
+		qBlocks.add(new QBlock(2634, 80, QBlock.PowerUp.COIN));
+		qBlocks.add(new QBlock(2650, 80, QBlock.PowerUp.NONE));
+		
+		goombas.add(new Goomba(new Vector2(2682, 32)));
+		goombas.add(new Goomba(new Vector2(2706, 32)));
+		pipes.add(new Pipe(2778, 32, 32));
+		
+		for(int i = 1; i <= 8; i++)
+		{
+			for(int j = 0; j < i; j++)
+			{
+				qBlocks.add(new QBlock(2778 + 16 + i * 16, 32 + j * 16, QBlock.PowerUp.NONE));
+				if(i == 8)
+				{
+					for(int k = 0; k < i; k++)
+					{
+						qBlocks.add(new QBlock(2778 + 2 * 16 + i * 16, 32 + j * 16, QBlock.PowerUp.NONE));
+					}
+				}
+			}
+		}
 	}
 	public void update(float delta)
 	{
