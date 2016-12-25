@@ -3,7 +3,10 @@ package com.stango.mario.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -23,18 +26,36 @@ public class Mario
 	Facing facing;
 	long jumpStartTime;
 	JumpState jumpState;
+	WalkState walkState;
 	Size size;
 	
 	Texture marioL;
+	Texture marioL2;
+	
 	Texture marioR;
+	Texture marioR2;
 	//Texture marioLJump;
 	//Texture marioRJump;
 	Texture marioLFall;
 	Texture marioRFall;
+	
 	Texture marioLBig;
+	Texture marioLBig2;
+	Texture marioLBig3;
+	
 	Texture marioRBig;
+	Texture marioRBig2;
+	Texture marioRBig3;
+
 	Texture marioLFallBig;
 	Texture marioRFallBig;
+	
+	long walkStartTime;
+	
+	Animation marioLWalk;
+	Animation marioRWalk;
+	Animation marioLBigWalk;
+	Animation marioRBigWalk;
 	
 	Level level;
 	boolean hitFlag;
@@ -43,16 +64,50 @@ public class Mario
 	public Mario(Level l)
 	{
 		marioL = new Texture(Gdx.files.internal("marioLeft.png"));
+		marioL2 = new Texture(Gdx.files.internal("marioLeft2.png"));
+
 		marioR = new Texture(Gdx.files.internal("marioRight.png"));
+		marioR2 = new Texture(Gdx.files.internal("marioRight2.png"));
+
 		//marioLJump = new Texture(Gdx.files.internal("marioLeftJump.png"));
 		//marioRJump = new Texture(Gdx.files.internal("marioRightJump.png"));
 		marioLFall = new Texture(Gdx.files.internal("marioLeftFalling.png"));
 		marioRFall = new Texture(Gdx.files.internal("marioRightFalling.png"));
 		
 		marioLBig = new Texture(Gdx.files.internal("marioLeftBig.png"));
+		marioLBig2 = new Texture(Gdx.files.internal("marioLeftBig2.png"));
+		marioLBig3 = new Texture(Gdx.files.internal("marioLeftBig3.png"));
+
 		marioRBig = new Texture(Gdx.files.internal("marioRightBig.png"));
+		marioRBig2 = new Texture(Gdx.files.internal("marioRightBig2.png"));
+		marioRBig3 = new Texture(Gdx.files.internal("marioRightBig3.png"));
+
 		marioLFallBig = new Texture(Gdx.files.internal("marioLeftFallingBig.png"));
 		marioRFallBig = new Texture(Gdx.files.internal("marioRightFallingBig.png"));
+		
+		//setting up the animations
+		Array<TextureRegion> marioLFrames = new Array<TextureRegion>();
+		marioLFrames.add(new TextureRegion(marioL));
+		marioLFrames.add(new TextureRegion(marioL2));
+		marioLWalk = new Animation(0.15f, marioLFrames, PlayMode.LOOP);
+		
+		Array<TextureRegion> marioRFrames = new Array<TextureRegion>();
+		marioRFrames.add(new TextureRegion(marioR));
+		marioRFrames.add(new TextureRegion(marioR2));
+		marioRWalk = new Animation(0.15f, marioRFrames, PlayMode.LOOP);
+		
+		Array<TextureRegion> marioLBigFrames = new Array<TextureRegion>();
+		marioLBigFrames.add(new TextureRegion(marioLBig));
+		marioLBigFrames.add(new TextureRegion(marioLBig2));
+		marioLBigFrames.add(new TextureRegion(marioLBig3));
+		marioLBigWalk = new Animation(0.15f, marioLBigFrames, PlayMode.LOOP);
+		
+		Array<TextureRegion> marioRBigFrames = new Array<TextureRegion>();
+		marioRBigFrames.add(new TextureRegion(marioRBig));
+		marioRBigFrames.add(new TextureRegion(marioRBig2));
+		marioRBigFrames.add(new TextureRegion(marioRBig3));
+		marioRBigWalk = new Animation(0.15f, marioRBigFrames, PlayMode.LOOP);
+		
 		level = l;
 		init();
 	}
@@ -67,6 +122,7 @@ public class Mario
 		lastPosition = new Vector2(position);
 		facing = Facing.RIGHT;
 		jumpState = JumpState.GROUNDED;
+		walkState = WalkState.STANDING;
 		hitFlag = true;
 		size = Size.SMALL;
 		level.init();
@@ -167,15 +223,25 @@ public class Mario
 		//movement
 		if(Gdx.input.isKeyPressed(Keys.LEFT))
 		{
+			if(jumpState == JumpState.GROUNDED && walkState != WalkState.WALKING)
+				walkStartTime = TimeUtils.nanoTime();
+			
 			facing = Facing.LEFT;
+			walkState = WalkState.WALKING;
 			position.x -= 128 * delta;
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.RIGHT))
+		else if(Gdx.input.isKeyPressed(Keys.RIGHT))
 		{
+			if(jumpState == JumpState.GROUNDED && walkState != WalkState.WALKING)
+				walkStartTime = TimeUtils.nanoTime();
+			
 			facing = Facing.RIGHT;
+			walkState = WalkState.WALKING;
 			position.x += 128 * delta;
 		}
+		else
+			walkState = WalkState.STANDING;
 		
 		//jumping
 		if(Gdx.input.isKeyPressed(Keys.Z))
@@ -559,6 +625,12 @@ public class Mario
 					//batch.draw(marioLJump, position.x, position.y);
 				//else if(jumpState == JumpState.FALLING)
 					batch.draw(marioLFall, position.x, position.y);
+	    		else if(walkState == WalkState.WALKING)
+	    		{
+	    			float time = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+	    			TextureRegion t = marioLWalk.getKeyFrame(time);
+	    			batch.draw(t.getTexture(), position.x, position.y);
+	    		}
 				else
 					batch.draw(marioL, position.x, position.y);
 			}
@@ -568,6 +640,12 @@ public class Mario
 					//batch.draw(marioRJump, position.x, position.y);
 				//else if(jumpState == JumpState.FALLING)
 					batch.draw(marioRFall, position.x, position.y);
+	    		else if(walkState == WalkState.WALKING)
+	    		{
+	    			float time = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+	    			TextureRegion t = marioRWalk.getKeyFrame(time);
+	    			batch.draw(t.getTexture(), position.x, position.y);
+	    		}
 				else
 					batch.draw(marioR, position.x, position.y);
 			}
@@ -580,6 +658,12 @@ public class Mario
 					//batch.draw(marioLJump, position.x, position.y);
 				//else if(jumpState == JumpState.FALLING)
 					batch.draw(marioLFallBig, position.x, position.y);
+	    		else if(walkState == WalkState.WALKING)
+	    		{
+	    			float time = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+	    			TextureRegion t = marioLBigWalk.getKeyFrame(time);
+	    			batch.draw(t.getTexture(), position.x, position.y);
+	    		}
 				else
 					batch.draw(marioLBig, position.x, position.y);
 			}
@@ -589,6 +673,12 @@ public class Mario
 					//batch.draw(marioRJump, position.x, position.y);
 				//else if(jumpState == JumpState.FALLING)
 					batch.draw(marioRFallBig, position.x, position.y);
+	    		else if(walkState == WalkState.WALKING)
+	    		{
+	    			float time = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+	    			TextureRegion t = marioRBigWalk.getKeyFrame(time);
+	    			batch.draw(t.getTexture(), position.x, position.y);
+	    		}
 				else
 					batch.draw(marioRBig, position.x, position.y);
 			}
@@ -626,5 +716,11 @@ public class Mario
 	{
 		BIG,
 		SMALL
+	}
+	
+	enum WalkState
+	{
+		WALKING,
+		STANDING
 	}
 }

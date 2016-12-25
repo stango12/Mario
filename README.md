@@ -13,4 +13,4 @@ A Mario Clone
 - Holding x makes Mario run
 
 ## Bugs:
-- 
+- Glitchy block check when jumping from bottom of block
